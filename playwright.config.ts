@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { testEnvironment } from './tests/e2e/config/environment';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -7,7 +8,7 @@ export default defineConfig({
     timeout: 10_000,
   },
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: testEnvironment.baseUrl,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
