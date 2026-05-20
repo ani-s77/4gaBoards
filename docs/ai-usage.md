@@ -49,20 +49,16 @@ The final test plan was reviewed and adjusted based on manual exploration of the
 
 Playwright Codegen was used to record initial browser flows.
 
-AI was then used to help convert raw generated code into reusable helpers, including:
+AI was then used to help convert raw generated code into focused Page Object Model classes, including:
 
-- `login`
-- `createProject`
-- `createBoard`
-- `createList`
-- `addCardToList`
-- `addCardsToSameList`
-- `openCard`
-- `closeCard`
-- `deleteCurrentBoard`
-- `deleteProject`
+- `LoginPage` for authentication.
+- `BoardPage` for board, list, and card-list workflows.
+- `CardView` for the card detail panel.
+- `ProjectSettingsPage` for project settings and project deletion.
 
 This made the tests easier to read, reduced duplicated setup steps, and improved maintainability.
+
+AI also helped centralize environment-specific values so the suite can run against different local or ephemeral environments using variables such as `E2E_BASE_URL`, `PLAYWRIGHT_BASE_URL`, `E2E_ADMIN_USERNAME`, and `E2E_ADMIN_PASSWORD`.
 
 ### 4. Selector Stabilization
 
@@ -83,7 +79,7 @@ AI was used to improve the test design so each test:
 - Creates a unique project and board.
 - Uses timestamped test data.
 - Runs independently.
-- Performs cleanup in a `finally` block.
+- Performs cleanup in a Playwright `afterEach` hook.
 
 This reduces test data collisions and makes repeated local runs more reliable.
 

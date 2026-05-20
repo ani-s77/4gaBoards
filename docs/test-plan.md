@@ -40,7 +40,7 @@ Each automated test creates unique test data using timestamped names, such as:
 
 This prevents collisions between test runs and makes test-created data easy to identify if cleanup fails.
 
-Each test creates its own project and board, runs the test workflow, and then performs best-effort cleanup in a `finally` block.
+Each test creates its own project and board, runs the test workflow, and then performs best-effort cleanup in a Playwright `afterEach` hook.
 
 ## Automated Test Cases
 
@@ -230,7 +230,7 @@ Playwright strategy:
 - Use visible text assertions to validate user outcomes.
 - Use timestamped test data to avoid collisions.
 - Create isolated project/board state per test.
-- Clean up board/project data in `finally` blocks.
+- Clean up board/project data in a Playwright `afterEach` hook.
 - Avoid fixed waits.
 - Avoid dynamic numeric IDs.
 - Use Chromium as the initial browser target.
