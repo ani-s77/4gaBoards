@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
+import { testEnvironment } from '../config/environment';
 
 export class LoginPage {
-  public readonly baseUrl: string;
   public readonly page: Page;
   public readonly emailField: Locator;
   public readonly passwordField: Locator;
@@ -12,9 +12,8 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.baseUrl = 'http://localhost:3000';
-    this.loginUrl = `${this.baseUrl}/login`;
-    this.dashboardUrl = `${this.baseUrl}/`;
+    this.loginUrl = `${testEnvironment.baseUrl}/login`;
+    this.dashboardUrl = `${testEnvironment.baseUrl}/`;
 
     this.loginBtn = this.page.locator("button[title='Log in']");
     this.emailField = this.page.locator("input[name='emailOrUsername']");
@@ -30,5 +29,9 @@ export class LoginPage {
     await this.emailField.fill(email);
     await this.passwordField.fill(password);
     await this.loginBtn.click();
+  }
+
+  public async loginAsAdmin(): Promise<void> {
+    await this.loginToDashboard(testEnvironment.admin.username, testEnvironment.admin.password);
   }
 }
