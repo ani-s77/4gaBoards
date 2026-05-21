@@ -2,112 +2,114 @@
 
 ## Overview
 
-AI was used to assist with planning, implementation, debugging, and cleanup of the Playwright E2E test suite for the 4ga Boards take-home exercise.
+AI was used as a development assistant while improving the Playwright E2E coverage for the 4ga Boards take-home exercise. The main goal was to turn a functional test implementation into a more maintainable test framework structure.
 
-The final test cases and code were manually reviewed and validated against the locally running application.
+The final implementation was manually reviewed and validated against the locally running application.
 
 ## Tools Used
 
-- ChatGPT for test planning, scope selection, code structure, and debugging assistance.
-- Playwright Codegen for initial workflow recording and locator discovery.
-- Manual inspection of the running app for validating user flows and selectors.
-- Docker Compose for local application setup.
+* ChatGPT / Codex for test planning, framework structure, refactoring suggestions, and debugging support.
+* Playwright for E2E automation.
+* Manual browser exploration for confirming workflows, selectors, and cleanup behavior.
+* Docker/local app setup for running the application during validation.
 
-## AI-Assisted Activities
+## How AI Was Used
 
 ### 1. Test Scope Selection
 
-AI was used to help identify high-value E2E workflows for a kanban-style application.
+AI helped narrow the automation scope to one high-value feature area:
 
-The selected feature area was:
+* list and card management
 
-- List and card management
+This was selected because lists and cards represent a core kanban workflow in the app. The final automated scenarios cover:
 
-The selected automated scenarios were:
+* creating a list and card
+* creating multiple lists
+* adding cards to specific lists
+* adding multiple cards to one list
+* opening and closing card detail view
+* deleting a list
+* canceling unsaved list/card creation
 
-- Create a list and add a card.
-- Create multiple lists and add cards to each list.
-- Add multiple cards to one list and open a card detail view.
-- Delete a list from the list menu.
-- Cancel draft list/card creation.
+### 2. Test Plan and Documentation
 
-### 2. Test Plan Drafting
+AI helped draft and refine the supporting documentation, including:
 
-AI was used to draft and refine the test plan structure, including:
+* the test plan
+* the automation scope
+* test data strategy
+* risks and considerations
+* future improvement ideas
+* this AI usage summary
 
-- Objective
-- Feature under test
-- Test data strategy
-- Automated test cases
-- Future coverage
-- Risks and considerations
-- Out-of-scope areas
+The documentation was adjusted after reviewing the final code so it matched the actual implementation.
 
-The final test plan was reviewed and adjusted based on manual exploration of the app.
+### 3. Page Object Model Refactor
 
-### 3. Playwright Code Structuring
+AI helped refactor the Playwright code into a Page Object Model structure so selectors and page interactions are not scattered throughout the tests.
 
-Playwright Codegen was used to record initial browser flows.
+The final page objects are:
 
-AI was then used to help convert raw generated code into focused Page Object Model classes, including:
+* `LoginPage` for authentication
+* `BoardPage` for project, board, list, and card-list interactions
+* `CardView` for card detail panel behavior
+* `ProjectSettingsPage` for project settings and project deletion
 
-- `LoginPage` for authentication.
-- `BoardPage` for board, list, and card-list workflows.
-- `CardView` for the card detail panel.
-- `ProjectSettingsPage` for project settings and project deletion.
+This makes the spec easier to read because the test file can focus on user workflows instead of low-level selectors.
 
-This made the tests easier to read, reduced duplicated setup steps, and improved maintainability.
+### 4. Playwright Lifecycle Cleanup
 
-AI also helped centralize environment-specific values so the suite can run against different local or ephemeral environments using variables such as `E2E_BASE_URL`, `PLAYWRIGHT_BASE_URL`, `E2E_ADMIN_USERNAME`, and `E2E_ADMIN_PASSWORD`.
+AI helped move setup and cleanup responsibilities into Playwright lifecycle hooks.
 
-### 4. Selector Stabilization
+The final suite uses:
 
-AI helped debug strict-mode locator failures caused by repeated button names such as:
+* `beforeEach` for login and initial page setup
+* `afterEach` for best-effort board/project cleanup
 
-- `Add Board`
-- `Add card`
-- `Delete List`
-- `Delete list`
-- `Cancel`
+This replaced ad hoc cleanup inside individual test bodies and made the suite more consistent.
 
-The final tests avoid dynamic numeric IDs and prefer more stable selectors based on roles, visible names, descriptions, and scoped interactions.
+### 5. Environment Configuration
 
-### 5. Test Isolation and Cleanup
+AI helped centralize environment-specific values in `tests/e2e/config/environment.ts`.
 
-AI was used to improve the test design so each test:
+The suite can now use environment variables such as:
 
-- Creates a unique project and board.
-- Uses timestamped test data.
-- Runs independently.
-- Performs cleanup in a Playwright `afterEach` hook.
+* `E2E_BASE_URL`
+* `PLAYWRIGHT_BASE_URL`
+* `E2E_ADMIN_USERNAME`
+* `E2E_ADMIN_PASSWORD`
 
-This reduces test data collisions and makes repeated local runs more reliable.
+This reduces hardcoding and makes the tests easier to run in different local or CI environments.
+
+### 6. Selector and Stability Review
+
+AI helped review selectors for repeated button names and strict-mode issues. The final tests prefer user-facing locators such as roles, visible names, descriptions, and scoped interactions where possible.
+
+The suite also uses timestamped test data so repeated runs do not collide with previous data.
 
 ## Human Review
 
-All generated code and suggestions were manually reviewed.
+All AI-generated code and documentation were reviewed before being kept.
 
 Manual decisions included:
 
-- Prioritizing stable E2E flows over brittle broad coverage.
-- Creating a new project per test instead of relying on the default seeded project.
-- Avoiding hardcoded project IDs.
-- Keeping destructive actions scoped to test-created data.
-- Verifying the final suite passes locally before submission.
+* focusing the new coverage on list/card management
+* keeping the new spec in the existing `tests/e2e/specs` structure
+* preserving existing tests and adding new coverage alongside them
+* separating card detail and project settings into their own page objects
+* using Playwright hooks for setup and cleanup
+* validating the final suite locally
 
 ## Final Automation Scope
 
-The final automated suite covers:
+The final added suite covers:
 
-1. Creating a list and card.
-2. Opening and closing a card detail view.
-3. Creating multiple lists.
-4. Adding cards to specific lists.
-5. Adding multiple cards to the same list.
-6. Deleting a list.
-7. Canceling unsaved list/card creation.
-8. Cleaning up test-created boards and projects.
+1. creating a list, adding a card, and opening card detail view
+2. creating multiple lists and adding cards to each list
+3. adding multiple cards to one list and opening the second card
+4. deleting a list from the list menu
+5. canceling list and card creation without saving draft items
 
 ## Notes
 
-AI was used as a productivity and debugging aid, but the final implementation was validated through manual local test execution.
+AI was useful for accelerating iteration and identifying framework improvements, but the final implementation was reviewed and validated manually. The most important learning was the difference between writing working tests and designing a Playwright suite that is easier to extend and maintain.
